@@ -35,7 +35,7 @@ class ServiceItem(models.Model):
 	type = models.CharField(max_length=1, choices=TYPE_SEL)
 
 	owner = models.ForeignKey(User)
-	template = models.ForeignKey('ImageTemplate')
+	template = models.ForeignKey('Image')
 
 	def __unicode__(self):
 		return self.name
@@ -56,24 +56,18 @@ class ServiceInstance(models.Model):
 	def __unicode__(self):
 		return self.name
 
-class ImageTemplate(models.Model):
-	name = models.CharField(max_length=80)
-	type = models.CharField(max_length=1, choices=IMAGE_TYPE_SEL)
-	pool = models.CharField(max_length=128)
-	volume = models.CharField(max_length=128)
-	source = models.CharField(max_length=1, choices=SOURCE_SEL)
-
-	def __unicode__(self):
-		return self.name
-
 class Image(models.Model):
 	name = models.CharField(max_length=80)
 	type = models.CharField(max_length=1, choices=IMAGE_TYPE_SEL)
+	source = models.CharField(max_length=1, choices=SOURCE_SEL)
+	is_template = models.BooleanField(default=False)
+	is_pool = models.BooleanField(default=False)
+
 	pool = models.CharField(max_length=128)
 	volume = models.CharField(max_length=128)
 
-	template = models.ForeignKey(ImageTemplate)
-	instance = models.ForeignKey(ServiceInstance)
+	template = models.ForeignKey('self', null=True, blank=True)
+	instance = models.ForeignKey(ServiceInstance, null=True, blank=True)
 
 	def __unicode__(self):
 		return self.name

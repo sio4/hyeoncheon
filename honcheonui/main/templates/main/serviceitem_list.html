@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Service Instance{% endblock %}
+
+{% block style %}{% endblock %}
+
+{% block content %}
+
+
+<div class="wgt_ds">
+	<h2>Service Items</h2>
+	<div class="action" id="service_action">
+		<a href="create/">New Service</a>
+	</div>
+	<table class="sheet" id="service_list">
+		<tr>
+			<th>id</th>
+			<th>name</th>
+			<th>type</th>
+			<th>owner</th>
+			<th>template</th>
+			<th>type (pool / volume)</th>
+			<th>source</th>
+			<th>action</th>
+		</tr>
+		{% for item in object_list %}
+		<tr>
+			<td class="tac">{{ item.id }}</td>
+			<td>{{ item.name }}</td>
+			<td>{{ item.get_type_display }}</td>
+			<td>{{ item.owner.username }}</td>
+			<td>{{ item.template.name }}</td>
+			<td>{{ item.template.get_type_display }}
+			({{ item.template.pool }}/{{ item.template.volume }})
+			</td>
+			<td>{{ item.template.get_source_display }}</td>
+			<td>make instance</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+
+{% endblock %}

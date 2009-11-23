@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Service Instance{% endblock %}
+
+{% block style %}{% endblock %}
+
+{% block content %}
+
+
+<div class="wgt_ds">
+	<h2>My Services</h2>
+	<div class="action" id="service_action">
+		<a href="create/">(Create Service)</a>
+		<a href="/serviceitems/">New Service</a>
+	</div>
+	<table class="sheet" id="service_list">
+		<tr>
+			<th>id</th>
+			<th>name</th>
+			<th>status</th>
+			<th>usage</th>
+			<th>service</th>
+			<th>type</th>
+			<th>user</th>
+			<th>cpus</th>
+			<th>memory</th>
+			<th>storage</th>
+			<th>action</th>
+		</tr>
+		{% for svc in object_list %}
+		<tr>
+			<td class="tac">{{ svc.id }}</td>
+			<td>{{ svc.name }}</td>
+			<td class="tac">{{ svc.get_status_display }}</td>
+			<td class="tar">{{ svc.point_used }} /
+			{{ svc.point_plan }}</td>
+			<td class="tac">{{ svc.item.name }}</td>
+			<td class="tac">{{ svc.item.get_type_display }}</td>
+			<td class="tac">{{ svc.user.username }}</td>
+			<td class="tar">{{ svc.cpus }}</td>
+			<td class="tar">{{ svc.memory }}</td>
+			<td class="tar">{{ svc.storage }}</td>
+			<td class="tac">S T P C</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+
+{% endblock %}

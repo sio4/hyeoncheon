@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<title>{% block title %}{% endblock %} - Hyeoncheon</title>
+		<link rel="stylesheet" href="/media/common/default.css" />
+		<link rel="stylesheet" href="{{ path_to_theme }}style.css" />
+		<script type="text/javascript">
+			//<![CDATA[
+			{% block script %}{% endblock %}
+			//]]>
+		</script>
+		<style>
+			/* basement */
+			body { background: #111; color: white; margin: 0; padding: 0; }
+			body { font-family: ""; font-size: 10pt; }
+			div#header { padding: 0 10px; }
+			div#content { padding: 30px 10px; background: #333; }
+			div#footer { padding: 10px 10px; text-align: center; font-size: 0.9em; }
+
+			/* widget */
+			div.wgt_ds h2 { border-bottom: 1px solid #ccc; }
+			div.wgt_ds div.action { text-align: right; }
+			div.wgt_ds div.action a { text-decoration: none; color: #aaa; }
+			div.wgt_ds table.sheet { width: 100%; }
+			div.wgt_ds table.sheet td { background: #444; padding: 0px 10px; }
+			div.wgt_ds table.sheet td { border-bottom: 1px solid #ccc; }
+			div.wgt_ds table.sheet th { border-top: 2px solid #ccc; }
+			div.wgt_ds table.sheet th { border-bottom: 1px solid #ccc; }
+
+			/* common */
+			.tac { text-align: center; }
+			.tar { text-align: right; }
+		</style>
+		{% block style %}{% endblock %}
+	</head>
+
+	<body>
+		<div id="header" class="frame">
+			<h1>玄天</h1>
+		</div>
+
+		<div id="content" class="frame">
+			{% block content %}{% endblock %}
+		</div>
+
+		<div id="footer" class="frame">
+			Hyeoncheon 0.1.0 &copy; 2009 The Hyeoncheon Project.
+		</div>
+		<!-- vim: set ts=2 sw=2 : -->
+	</body>
+</html>
+

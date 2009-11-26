@@ -29,10 +29,19 @@ IMAGE_TYPE_SEL = (
 	('R', 'Raw Partition'),
 )
 
+RELEASE_STATUS_SEL = (
+	('D', 'Draft'),
+	('R', 'Released'),
+	('P', 'Postponed'),
+	('E', 'Expired'),
+)
+
 
 class ServiceItem(models.Model):
 	name = models.CharField(max_length=80)
 	type = models.CharField(max_length=1, choices=TYPE_SEL)
+
+	status = models.CharField(max_length=1, choices=RELEASE_STATUS_SEL)
 
 	owner = models.ForeignKey(User)
 	template = models.ForeignKey('Image')

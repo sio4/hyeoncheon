@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Service Instance{% endblock %}
+
+{% block style %}{% endblock %}
+
+{% block content %}
+
+
+<div class="wgt_ds">
+	<h2>My Services</h2>
+	<div class="action" id="service_action">
+		<a href="create/">(Create Service)</a>
+		<a href="/serviceitems/">New Service</a>
+	</div>
+	<table class="sheet" id="service_list">
+		<tr>
+			<th>c</th>
+			<th>s</th>
+			<th>s</th>
+			<th>name</th>
+			<th>location</th>
+			<th>description</th>
+			<th>stars</th>
+			<th>action</th>
+		</tr>
+		{% for obj in object_list %}
+		<tr>
+			<td class="tac">{{ obj.id }}</td>
+			<td class="tac"></td>
+			<td class="tac"></td>
+			<td class="tac">{{ obj.name }}</td>
+			<td class="tac">{{ obj.location }}</td>
+			<td>{{ obj.description }}</td>
+			<td class="tac">{{ obj.star_set.count }}</td>
+			<td class="tac">S T P C</td>
+		</tr>
+		{% for s in obj.star_set.all %}
+		<tr>
+			<td class="tac">\</td>
+			<td class="tac">{{ s.id }}</td>
+			<td class="tac"></td>
+			<td class="tac">{{ s.name }}</td>
+			{% if s.is_virtual %}
+			<td class="tac">{{ s.deployed_on.name }}</td>
+			{% else %}
+			<td class="tac">{{ s.constellation.name }}</td>
+			{% endif %}
+			<td>
+				dom: {{ s.listDomains }}
+				dom_def: {{ s.listDefinedDomains }}
+				sp: {{ s.listStoragePools }}
+				net: {{ s.listNetworks }}
+				{% for d in s.listDomains %}
+					{{ d }}
+					{{ s.get_vm_uuid_by_name }}
+				{% endfor %}
+
+			</td>
+			<td class="tac">{{ s.get_status_display }}</td>
+			<td class="tac">S T P C</td>
+		</tr>
+		{% endfor %}
+		{% endfor %}
+	</table>
+</div>
+
+{% endblock %}

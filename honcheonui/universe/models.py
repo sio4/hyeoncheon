@@ -1,115 +1,109 @@
 from django.db import models
 
 import libvirt
+import uuid
 
-# Create your models here.
+###
+### helper functions
 
+def make_uuid():
+	return str(uuid.uuid4())
+
+
+###
+### logical classes
+
+### constellation
 class Constellation(models.Model):
+	uuid = models.CharField(max_length=36,default=make_uuid,editable=False)
 	name = models.CharField(max_length=80)
 	location = models.CharField(max_length=128)
 	description = models.TextField(null=True, blank=True)
 
+	version = models.IntegerField(default=0)
+	timestamp = models.DateTimeField(auto_now=True)
+
 	def __unicode__(self):
 		return self.name
 
+
+###
+### represent physical part of cluster.
+
+### physical machine
 STAR_STATUS_SEL = (
-	('S', 'Stop'),
-	('R', 'Run'),
+	('r', 'running'),
+	('s', 'shutoff'),
 )
 
 STAR_MODE_SEL = (
-	('C', 'Configured'),
-	('I', 'Installed'),
-	('D', 'Deployed'),
-	('M', 'Maintenance'),
+	('c', 'configured'),
+	('i', 'installed'),
+	('d', 'deployed'),
+	('m', 'maintenance'),
 )
 
 class Star(models.Model):
+	uuid = models.CharField(max_length=36,default=make_uuid,editable=False)
 	name = models.CharField(max_length=80)
-	url = models.CharField(max_length=128)
-
-	is_virtual = models.BooleanField(default=False)
-	deployed_on = models.ForeignKey('self', null=True,blank=True)
-
-	status = models.CharField(max_length=1, choices=STAR_STATUS_SEL)
-	mode = models.CharField(max_length=1, choices=STAR_MODE_SEL)
+	uri = models.CharField(max_length=128)
 
 	constellation = models.ForeignKey(Constellation)
+	version = models.IntegerField(default=0)
+	timestamp = models.DateTimeField(auto_now=True)
+
+	## libvirt structure
+	hostname = models.CharField(max_length=80,null=True,blank=True)
+	type = models.CharField(max_length=20,null=True,blank=True)
+	model = models.CharField(max_length=32,null=True,blank=True)
+	memory = models.IntegerField(default=0)
+	cpus = models.IntegerField(default=0)
+	mhz = models.IntegerField(default=0)
 
 	def __unicode__(self):
 		return self.name
 
-	def listDomains(self):
-		vms = []
-		try:
-			conn = libvirt.open(self.url)
-			for id in conn.listDomainsID():
-				dom = conn.lookupByID(id)
-				vms.append(dom.name())
-			conn.close()
-		except:
-			pass
-
-		return vms
-
-	def listDefinedDomains(self):
-		try:
-			conn = libvirt.open(self.url)
-			vm_defined = conn.listDefinedDomains()
-			conn.close()
-		except:
-			vm_defined = []
-
-		return vm_defined
-
-	def listNetworks(self):
-		try:
-			conn = libvirt.open(self.url)
-			networks = conn.listNetworks()
-			conn.close()
-		except:
-			networks = []
-
-		return networks
-
-	def listStoragePools(self):
-		try:
-			conn = libvirt.open(self.url)
-			storage_pools = conn.listStoragePools()
-			conn.close()
-		except:
-			storage_pools = []
-
-		return storage_pools
+class StarStatus(models.Model):
+	status = models.CharField(max_length=1, choices=STAR_STATUS_SEL)
+	mode = models.CharField(max_length=1, choices=STAR_MODE_SEL)
 
 
-	def getType(self):
-		conn = libvirt.open(self.url)
-		ret = conn.getType()
-		conn.close()
-		return ret
+### virtual machine
+DOM_STATE_SEL = (
+	('0', 'no state'),
+	('1', 'running'),
+	('2', 'blocked'),
+	('3', 'paused'),
+	('4', 'shutdown'),
+	('5', 'shutoff'),
+	('6', 'crashed'),
+)
 
-	def getInfo(self):
-		conn = libvirt.open(self.url)
-		ret = conn.getInfo()
-		conn.close()
-		return ret
+class Light(models.Model):
+	uuid = models.CharField(max_length=36)
+	name = models.CharField(max_length=80)
+
+	star = models.ForeignKey(Star, null=True, blank=True)
+	version = models.IntegerField(default=0)
+	timestamp = models.DateTimeField(auto_now=True)
+
+	# is it config or libvirt-info?
+	type = models.CharField(max_length=20)
+	memory = models.IntegerField(default=0)
+	cpus = models.IntegerField(default=0)
+
+	def __unicode__(self):
+		return self.name
+
+class LightStatus(models.Model):
+	state = models.CharField(max_length=1,choices=DOM_STATE_SEL)
+	cputime = models.IntegerField(default=0)
+
+	light = models.ForeignKey(Light)
+	timestamp = models.DateTimeField(auto_now=True)
 
 
-	def get_vm_uuid_by_name(self, name):
-		conn = libvirt.open(self.url)
-		dom = conn.loolupByName(name)
-		ret = dom.UUIDString()
-		conn.close()
-		return ret
-
-	def get_vm_info_by_name(self, name):
-		conn = libvirt.open(self.url)
-		dom = conn.loolupByName(name)
-		ret = dom.info()
-		return ret
-
-
+### network (virtual or physical)
 NETWORK_TYPE_SEL = (
 	('I', 'Isolated'),
 	('B', 'Bridged'),
@@ -117,6 +111,7 @@ NETWORK_TYPE_SEL = (
 )
 
 class Network(models.Model):
+	uuid = models.CharField(max_length=36)
 	name = models.CharField(max_length=80)
 	network = models.CharField(max_length=128)
 	dhcp_start = models.IPAddressField()
@@ -124,28 +119,87 @@ class Network(models.Model):
 	type =models.CharField(max_length=1, choices=NETWORK_TYPE_SEL)
 
 	constellation = models.ForeignKey(Constellation)
+	version = models.IntegerField(default=0)
+	timestamp = models.DateTimeField(auto_now=True)
+
+	# is it related on libvirt? global or local?
+	bridge = models.CharField(max_length=80)
 
 	def __unicode__(self):
 		return self.name
 
+
+### storage pool
 STORAGE_TYPE_SEL = (
-	('D', 'Directory'),
-	('B', 'Block Device'),
-	('I', 'iSCSI'),
-	('L', 'LVM'),
-	('N', 'Network FS'),
+	('d', 'directory'),
+	('b', 'block device'),
+	('i', 'iscsi'),
+	('l', 'lvm'),
+	('n', 'network fs'),
+)
+
+STORAGE_STATE_SEL = (
+	('0', 'inactive'),
+	('1', 'building'),
+	('2', 'running'),
+	('3', 'degraded'),
 )
 
 class StoragePool(models.Model):
+	uuid = models.CharField(max_length=36)
 	name = models.CharField(max_length=80)
-	type =models.CharField(max_length=1, choices=STORAGE_TYPE_SEL)
+	type = models.CharField(max_length=1, choices=STORAGE_TYPE_SEL)
 	path = models.CharField(max_length=128)
 
 	hostname =models.CharField(max_length=128,null=True,blank=True)
 	export = models.CharField(max_length=128,null=True,blank=True)
 
 	constellation = models.ForeignKey(Constellation)
+	version = models.IntegerField(default=0)
+	timestamp = models.DateTimeField(auto_now=True)
+
+	capacity = models.IntegerField(default=0)
 
 	def __unicode__(self):
 		return self.name
+
+class StoragePoolStatus(models.Model):
+	state = models.CharField(max_length=1, choices=STORAGE_STATE_SEL)
+	allocation = models.IntegerField(default=0)
+	available = models.IntegerField(default=0)
+
+	pool = models.ForeignKey(StoragePool)
+	timestamp = models.DateTimeField(auto_now=True)
+
+
+### storage volume
+VOLUME_TYPE_SEL = (
+	('0', 'file'),
+	('1', 'block'),
+)
+
+class StorageVolume(models.Model):
+	uuid = models.CharField(max_length=36)
+	name = models.CharField(max_length=80)
+	type = models.CharField(max_length=1,choices=VOLUME_TYPE_SEL)
+
+	# from libvirt?
+	path = models.CharField(max_length=265)
+	capacity = models.IntegerField(default=0)
+
+	version = models.IntegerField(default=0)
+	timestamp = models.DateTimeField(auto_now=True)
+
+	def __unicode__(self):
+		return self.name
+
+class StorageVolumeStatus(models.Model):
+	allocation = models.IntegerField(default=0)
+
+	volume = models.ForeignKey(StorageVolume)
+	timestamp = models.DateTimeField(auto_now=True)
+
+
+
+#### TODO: add version information
 

@@ -8,4 +8,7 @@ from universe.models import *
 urlpatterns = patterns('',
 	(r'^$', object_list,
 		{'queryset':Constellation.objects.all(),}),
+	(r'^star/$', 'universe.views.stars'),
+	(r'^star/(?P<uuid>.+)/$', 'universe.views.star'),
+	(r'^storage/(?P<uuid>.+)/$', 'universe.views.pool'),
 )

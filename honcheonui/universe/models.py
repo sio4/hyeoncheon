@@ -83,7 +83,7 @@ class Light(models.Model):
 	uuid = models.CharField(max_length=36)
 	name = models.CharField(max_length=80)
 
-	star = models.ForeignKey(Star, null=True, blank=True)
+	star = models.ForeignKey(Constellation)
 	version = models.IntegerField(default=0)
 	timestamp = models.DateTimeField(auto_now=True)
 
@@ -98,6 +98,8 @@ class Light(models.Model):
 class LightStatus(models.Model):
 	state = models.CharField(max_length=1,choices=DOM_STATE_SEL)
 	cputime = models.IntegerField(default=0)
+
+	star = models.ForeignKey(Star, null=True, blank=True)
 
 	light = models.ForeignKey(Light)
 	timestamp = models.DateTimeField(auto_now=True)
@@ -119,6 +121,7 @@ class Network(models.Model):
 	type =models.CharField(max_length=1, choices=NETWORK_TYPE_SEL)
 
 	constellation = models.ForeignKey(Constellation)
+	star = models.ForeignKey(Star)
 	version = models.IntegerField(default=0)
 	timestamp = models.DateTimeField(auto_now=True)
 
@@ -145,11 +148,13 @@ STORAGE_STATE_SEL = (
 	('3', 'degraded'),
 )
 
-class StoragePool(models.Model):
+class Pool(models.Model):
 	uuid = models.CharField(max_length=36)
 	name = models.CharField(max_length=80)
-	type = models.CharField(max_length=1, choices=STORAGE_TYPE_SEL)
-	path = models.CharField(max_length=128)
+	type = models.CharField(max_length=1,default='d',
+			choices=STORAGE_TYPE_SEL)
+	path = models.CharField(max_length=128,null=True,blank=True)
+	is_shared = models.BooleanField(default=False)
 
 	hostname =models.CharField(max_length=128,null=True,blank=True)
 	export = models.CharField(max_length=128,null=True,blank=True)
@@ -163,13 +168,17 @@ class StoragePool(models.Model):
 	def __unicode__(self):
 		return self.name
 
-class StoragePoolStatus(models.Model):
+class PoolStatus(models.Model):
 	state = models.CharField(max_length=1, choices=STORAGE_STATE_SEL)
 	allocation = models.IntegerField(default=0)
 	available = models.IntegerField(default=0)
 
-	pool = models.ForeignKey(StoragePool)
+	pool = models.ForeignKey(Pool)
 	timestamp = models.DateTimeField(auto_now=True)
+
+class PoolLink(models.Model):
+	pool = models.ForeignKey(Pool)
+	star = models.ForeignKey(Star)
 
 
 ### storage volume
@@ -178,7 +187,7 @@ VOLUME_TYPE_SEL = (
 	('1', 'block'),
 )
 
-class StorageVolume(models.Model):
+class Volume(models.Model):
 	uuid = models.CharField(max_length=36)
 	name = models.CharField(max_length=80)
 	type = models.CharField(max_length=1,choices=VOLUME_TYPE_SEL)
@@ -187,17 +196,22 @@ class StorageVolume(models.Model):
 	path = models.CharField(max_length=265)
 	capacity = models.IntegerField(default=0)
 
+	pool = models.ForeignKey(Pool)
 	version = models.IntegerField(default=0)
 	timestamp = models.DateTimeField(auto_now=True)
 
 	def __unicode__(self):
 		return self.name
 
-class StorageVolumeStatus(models.Model):
+class VolumeStatus(models.Model):
 	allocation = models.IntegerField(default=0)
 
-	volume = models.ForeignKey(StorageVolume)
+	volume = models.ForeignKey(Volume)
 	timestamp = models.DateTimeField(auto_now=True)
+
+class VolumeLink(models.Model):
+	volume = models.ForeignKey(Volume)
+	star = models.ForeignKey(Star)
 
 
 

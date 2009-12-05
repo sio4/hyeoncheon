@@ -24,33 +24,36 @@
 			<th>stars</th>
 			<th>action</th>
 		</tr>
-		{% for obj in object_list %}
+		{% for constellation in object_list %}
 		<tr>
-			<td class="tac">{{ obj.id }}</td>
+			<td class="tac">{{ constellation.id }}</td>
 			<td class="tac"></td>
 			<td class="tac"></td>
-			<td class="tac">{{ obj.name }}</td>
-			<td class="tac">{{ obj.location }}</td>
-			<td>{{ obj.description }}</td>
-			<td class="tac">{{ obj.star_set.count }}</td>
+			<td class="tac">{{ constellation.name }}</td>
+			<td class="tac">{{ constellation.location }}</td>
+			<td>
+			{{ constellation.description }}
+			{{ constellation.uuid }}
+			{{ constellation.timestamp }}
+			</td>
+			<td class="tac">{{ constellation.star_set.count }}</td>
 			<td class="tac">S T P C</td>
 		</tr>
-		{% for s in obj.star_set.all %}
+		{% for s in constellation.star_set.all %}
 		<tr>
 			<td class="tac">\</td>
 			<td class="tac">{{ s.id }}</td>
 			<td class="tac"></td>
 			<td class="tac">{{ s.name }}</td>
-			{% if s.is_virtual %}
-			<td class="tac">{{ s.deployed_on.name }}</td>
-			{% else %}
 			<td class="tac">{{ s.constellation.name }}</td>
-			{% endif %}
 			<td>
-				dom: {{ s.listDomains }}
-				dom_def: {{ s.listDefinedDomains }}
-				sp: {{ s.listStoragePools }}
-				net: {{ s.listNetworks }}
+				{{ s.uuid }}
+				hostname: {{ s.hostname }}
+				type: {{ s.type }}
+				model: {{ s.model }}
+				memory: {{ s.memory }}
+				cpus: {{ s.cpus }}
+				mhz: {{ s.mhz }}
 				{% for d in s.listDomains %}
 					{{ d }}
 					{{ s.get_vm_uuid_by_name }}

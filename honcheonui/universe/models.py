@@ -18,7 +18,7 @@ class Constellation(models.Model):
 	uuid = models.CharField(max_length=36,default=make_uuid,editable=False)
 	name = models.CharField(max_length=80)
 	location = models.CharField(max_length=128)
-	description = models.TextField(null=True, blank=True)
+	description = models.CharField(max_length=256, null=True,blank=True)
 
 	version = models.IntegerField(default=0)
 	timestamp = models.DateTimeField(auto_now=True)
@@ -83,7 +83,7 @@ class Light(models.Model):
 	uuid = models.CharField(max_length=36)
 	name = models.CharField(max_length=80)
 
-	star = models.ForeignKey(Constellation)
+	constellation = models.ForeignKey(Constellation)
 	version = models.IntegerField(default=0)
 	timestamp = models.DateTimeField(auto_now=True)
 
@@ -97,7 +97,7 @@ class Light(models.Model):
 
 class LightStatus(models.Model):
 	state = models.CharField(max_length=1,choices=DOM_STATE_SEL)
-	cputime = models.IntegerField(default=0)
+	cputime = models.PositiveIntegerField(default=0)
 
 	star = models.ForeignKey(Star, null=True, blank=True)
 
@@ -115,13 +115,12 @@ NETWORK_TYPE_SEL = (
 class Network(models.Model):
 	uuid = models.CharField(max_length=36)
 	name = models.CharField(max_length=80)
-	network = models.CharField(max_length=128)
-	dhcp_start = models.IPAddressField()
-	dhcp_end =models.IPAddressField()
+	network = models.CharField(max_length=128,null=True,blank=True)
+	dhcp_start = models.IPAddressField(null=True,blank=True)
+	dhcp_end =models.IPAddressField(null=True,blank=True)
 	type =models.CharField(max_length=1, choices=NETWORK_TYPE_SEL)
 
 	constellation = models.ForeignKey(Constellation)
-	star = models.ForeignKey(Star)
 	version = models.IntegerField(default=0)
 	timestamp = models.DateTimeField(auto_now=True)
 

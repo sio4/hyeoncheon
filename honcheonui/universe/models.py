@@ -66,6 +66,8 @@ class Star(models.Model):
 class StarStatus(models.Model):
 	status = models.CharField(max_length=1, choices=STAR_STATUS_SEL)
 	mode = models.CharField(max_length=1, choices=STAR_MODE_SEL)
+	class Meta:
+		get_latest_by = 'timestamp'
 
 
 ### virtual machine
@@ -103,6 +105,8 @@ class LightStatus(models.Model):
 
 	light = models.ForeignKey(Light)
 	timestamp = models.DateTimeField(auto_now=True)
+	class Meta:
+		get_latest_by = 'timestamp'
 
 
 ### network (virtual or physical)
@@ -174,6 +178,8 @@ class PoolStatus(models.Model):
 
 	pool = models.ForeignKey(Pool)
 	timestamp = models.DateTimeField(auto_now=True)
+	class Meta:
+		get_latest_by = 'timestamp'
 
 class PoolLink(models.Model):
 	pool = models.ForeignKey(Pool)
@@ -207,6 +213,8 @@ class VolumeStatus(models.Model):
 
 	volume = models.ForeignKey(Volume)
 	timestamp = models.DateTimeField(auto_now=True)
+	class Meta:
+		get_latest_by = 'timestamp'
 
 class VolumeLink(models.Model):
 	volume = models.ForeignKey(Volume)

@@ -194,12 +194,16 @@ VOLUME_TYPE_SEL = (
 
 class Volume(models.Model):
 	uuid = models.CharField(max_length=36)
-	name = models.CharField(max_length=80)
+	name = models.CharField(max_length=80,default='Untitled')
 	type = models.CharField(max_length=1,choices=VOLUME_TYPE_SEL)
 
 	# from libvirt?
 	path = models.CharField(max_length=265)
 	capacity = models.IntegerField(default=0)
+
+	light = models.ForeignKey(Light,null=True,blank=True)
+	is_template = models.BooleanField(default=False)
+	parent = models.ForeignKey('self',null=True,blank=True)
 
 	pool = models.ForeignKey(Pool)
 	version = models.IntegerField(default=0)
@@ -219,7 +223,6 @@ class VolumeStatus(models.Model):
 class VolumeLink(models.Model):
 	volume = models.ForeignKey(Volume)
 	star = models.ForeignKey(Star)
-
 
 
 #### TODO: add version information

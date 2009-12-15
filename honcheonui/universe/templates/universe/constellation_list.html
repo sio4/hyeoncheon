@@ -15,6 +15,7 @@
 	</div>
 
 	<style>
+		/*
 		.wgt_tree_frame { border: 1px dotted white; }
 		.wgt_tree_constellation { border-left: 1px dotted #555; }
 		.wgt_tree_star { border-left: 1px dotted #555; }
@@ -26,8 +27,10 @@
 		.wgt_item_light { border-top: 1px dotted #999; }
 		.wgt_item_pool { border-top: 1px dotted #999; }
 		.wgt_item_volume { border-top: 1px dotted #999; }
+		*/
 		.wgt_tree_star, .wgt_tree_light, .wgt_tree_pool, .wgt_tree_volume {
 			margin-left: 16px;
+			padding-bottom: 10px;
 		}
 	</style>
 
@@ -52,7 +55,7 @@
 					{{ star.memory }}
 					{{ star.cpus }}
 					{{ star.mhz }}
-					{{ star.hostname }}
+					<!-- {{ star.hostname }} -->
 					{{ star.type }}
 					{{ star.model }}
 				</div>
@@ -87,10 +90,15 @@
 				<div class="wgt_tree_volume">
 					{% for volume in pool.volume_set.all %}
 					<div class="wgt_item_volume">
-						<!-- {{ volume.name }} -->
+						{{ volume.name }}
 						{{ volume.uuid|make_list|slice:":15"|join:"" }}...
 						{{ volume.get_type_display }}
-						{{ volume.path }}
+
+						{{ volume.is_template }}
+						{{ volume.light }}
+						{{ volume.parent }}
+
+						<!-- {{ volume.path }} -->
 						{{ volume.capacity }}
 						{{ volume.volumestatus_set.latest.allocation }}
 					</div>

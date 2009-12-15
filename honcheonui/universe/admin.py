@@ -85,7 +85,7 @@ class PoolAdmin(admin.ModelAdmin):
 	inlines = [PoolStatusInline, PoolLinkInline, VolumeInline]
 
 class VolumeAdmin(admin.ModelAdmin):
-	list_display = ('name','pool','capacity')
+	list_display = ('name','uuid','pool','capacity')
 	inlines = [VolumeStatusInline]
 
 admin.site.register(Constellation, ConstellationAdmin)

@@ -59,7 +59,6 @@ def update_volume_info(conn, virt_pool, star, pool):
 		uuid = name.split('.')[0]
 
 		v = pool.volume_set.get_or_create(uuid=uuid)[0]
-		v.name = name
 		v.type = type
 		v.path = path
 		v.capacity = capacity

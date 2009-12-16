@@ -11,10 +11,10 @@ div.wgt_ds h2 { border-bottom: 1px solid #ccc; }
 div.wgt_ds div.action { text-align: right; }
 div.wgt_ds div.action a { text-decoration: none; color: #aaa; }
 div.wgt_ds table.sheet { width: 100%; }
-div.wgt_ds table.sheet td { background: #444; padding: 0px 10px; }
-div.wgt_ds table.sheet td { border-bottom: 1px solid #ccc; }
-div.wgt_ds table.sheet th { border-top: 2px solid #ccc; }
-div.wgt_ds table.sheet th { border-bottom: 1px solid #ccc; }
+div.wgt_ds table.sheet td { background: transparent; padding: 0px 10px; }
+div.wgt_ds table.sheet td { border-bottom: 1px dotted #bbb; }
+div.wgt_ds table.sheet th { border-top: 2px dotted #bbb; }
+div.wgt_ds table.sheet th { border-bottom: 1px dotted #bbb; }
 
 /* common */
 .tac { text-align: center; }

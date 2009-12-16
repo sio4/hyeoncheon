@@ -210,7 +210,7 @@ class Volume(models.Model):
 	timestamp = models.DateTimeField(auto_now=True)
 
 	def __unicode__(self):
-		return self.name
+		return self.name + " " + self.uuid.partition('-')[0]
 
 class VolumeStatus(models.Model):
 	allocation = models.IntegerField(default=0)

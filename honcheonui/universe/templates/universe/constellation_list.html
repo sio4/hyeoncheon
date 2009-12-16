@@ -29,19 +29,23 @@
 		.wgt_item_pool { border-top: 1px dotted #999; }
 		.wgt_item_volume { border-top: 1px dotted #999; }
 		*/
+		.icon_constellation, .icon_star, .icon_light, .icon_pool, .icon_volume {
+			display: inline;
+		}
 		.wgt_tree_star, .wgt_tree_light, .wgt_tree_pool, .wgt_tree_volume {
 			margin-left: 16px;
 			padding-bottom: 10px;
 		}
 		.box_25 { display: inline-block; width: 25em; }
-		.box_20 { display: inline-block; width: 20em; }
 		.box_15 { display: inline-block; width: 15em; }
 		.box_10 { display: inline-block; width: 10em; }
 		.box_5 { display: inline-block; width: 5em; }
 		.box_3 { display: inline-block; width: 3em; }
 		.box_2 { display: inline-block; width: 2em; }
 		.box_1 { display: inline-block; width: 1em; }
-		.ra { text-align: right; }
+		.box_25, .box_15, .box_10, .box_5, .box_3, .box_2 {
+			border-bottom: 1px dotted #bbb;
+		}
 	</style>
 
 
@@ -49,6 +53,9 @@
 		<div class="wgt_tree_constellation">
 			{% for constellation in object_list %}
 			<div class="wgt_item_constellation">
+				<div class="icon_constellation">
+					<img src="c" alt="c" width=10>
+				</div>
 				<div class='box_5'>{{ constellation.name }}</div>
 				<div class='box_5'>{{ constellation.location }}</div>
 				<div class='box_25'>{{ constellation.description }}</div>
@@ -60,13 +67,16 @@
 			<div class="wgt_tree_star">
 				{% for star in constellation.star_set.all %}
 				<div class="wgt_item_star">
+					<div class="icon_star">
+						<img src="s" alt="s" width=10>
+					</div>
 					<div class='box_10'>{{ star.name }}</div>
 					<div class='box_5' title='{{ star.uuid }}'
 						>{{ star.uuid|make_list|slice:":5"|join:"" }}...</div>
 					<div class='box_25'>{{ star.uri }}</div>
-					<div class='box_5 ra'>{{ star.memory }}GB</div>
-					<div class='box_5 ra'>{{ star.cpus }}core(s)</div>
-					<div class='box_5 ra'>{{ star.mhz }}MHz</div>
+					<div class='box_5 tar'>{{ star.memory }}GB</div>
+					<div class='box_5 tar'>{{ star.cpus }}core(s)</div>
+					<div class='box_5 tar'>{{ star.mhz }}MHz</div>
 					<!-- {{ star.hostname }} -->
 					<div class='box_3'>{{ star.type }}</div>
 					<div class='box_3'>{{ star.model }}</div>
@@ -76,13 +86,16 @@
 			<div class="wgt_tree_light">
 				{% for light in constellation.light_set.all %}
 				<div class="wgt_item_light">
+					<div class="icon_light">
+						<img src="l" alt="l" width=10>
+					</div>
 					<div class='box_10' title='xx'>{{ light.name }}</div>
 					<div class='box_5' title='{{ light.uuid }}'
 						>{{ light.uuid|make_list|slice:":5"|join:"" }}...</div>
 					<div class='box_5'>{{ light.type }}</div>
-					<div class='box_10 ra'>{{ light.memory }}KB</div>
-					<div class='box_5 ra'>{{ light.cpus }}cpu(s)</div>
-					<div class='box_5 ra'>{{ light.lightstatus_set.latest.cputime }}</div>
+					<div class='box_10 tar'>{{ light.memory }}KB</div>
+					<div class='box_5 tar'>{{ light.cpus }}cpu(s)</div>
+					<div class='box_5 tar'>{{ light.lightstatus_set.latest.cputime }}</div>
 					<div class='box_5'>{{ light.lightstatus_set.latest.get_state_display }}</div>
 					<div class='box_10'>{{ light.lightstatus_set.latest.star }}</div>
 				</div>
@@ -91,19 +104,25 @@
 			<div class="wgt_tree_pool">
 				{% for pool in constellation.pool_set.all %}
 				<div class="wgt_item_pool">
+					<div class="icon_pool">
+						<img src="p" alt="p" width=10>
+					</div>
 					<div class='box_10'>{{ pool.name }}</div>
 					<div class='box_5' title='{{ pool.uuid }}'
 						>{{ pool.uuid|make_list|slice:":5"|join:"" }}...</div>
 					<div class='box_5'>{{ pool.get_type_display }}</div>
-					<div class='box_5 ra'>{{ pool.poolstatus_set.latest.allocation }} /</div>
-					<div class='box_5 ra'>{{ pool.capacity }}MB</div>
-					<div class='box_5 ra'>{{ pool.poolstatus_set.latest.available }}MB</div>
+					<div class='box_5 tar'>{{ pool.poolstatus_set.latest.allocation }} /</div>
+					<div class='box_5 tar'>{{ pool.capacity }}MB</div>
+					<div class='box_5 tar'>{{ pool.poolstatus_set.latest.available }}MB</div>
 					<div class='box_5'>{{ pool.poolstatus_set.latest.get_state_display }}</div>
 					<div class='box_10'>{{ pool.poollink_set.get.star }}</div>
 				</div>
 				<div class="wgt_tree_volume">
 					{% for volume in pool.volume_set.all %}
 					<div class="wgt_item_volume">
+						<div class="icon_volume">
+							<img src="v" alt="v" width=10>
+						</div>
 						<div class='box_10'>{{ volume.name }}</div>
 						<div class='box_5' title='{{ volume.uuid }}'
 							>{{ volume.uuid|make_list|slice:":5"|join:"" }}...</div>
@@ -114,8 +133,8 @@
 						<div class='box_10'>{{ volume.parent }}</div>
 
 						<!-- {{ volume.path }} -->
-						<div class='box_5 ra'>{{ volume.volumestatus_set.latest.allocation }} /</div>
-						<div class='box_3 ra'>{{ volume.capacity }}MB</div>
+						<div class='box_5 tar'>{{ volume.volumestatus_set.latest.allocation }} /</div>
+						<div class='box_5 tar'>{{ volume.capacity }}MB</div>
 					</div>
 					{% endfor %}
 				</div>

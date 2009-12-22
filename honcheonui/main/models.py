@@ -66,3 +66,6 @@ class ServiceInstance(models.Model):
 	def __unicode__(self):
 		return self.name
 
+	def available_templates(self):
+		return Volume.objects.filter(is_template=True)
+
